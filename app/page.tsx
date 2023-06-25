@@ -8,11 +8,20 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import { useEffect, useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const defaultValues = {
   level: 238,
   class: "Dawn Warrior",
-  mainWeapon: "2H Sword",
+  mainWeapon: "Two-handed Sword",
   upperRangeValue: 2000000,
   bossDamage: 150,
   ied: 85,
@@ -20,33 +29,154 @@ const defaultValues = {
   finalDamage: 60,
   criticalRate: 70,
   criticalDamage: 22,
+  attackPower: 1103,
   str: 12438,
   dex: 2300,
   int: 1500,
   luk: 1700,
 };
 
+const MAPLESTORY_CLASSES = [
+  "Adele",
+  "Angelic Buster",
+  "Aran",
+  "Ark",
+  "Battle Mage",
+  "Bishop",
+  "Blaster",
+  "Blaze Wizard",
+  "Beast Tamer",
+  "Bowmaster",
+  "Buccaneer",
+  "Cadena",
+  "Cannoneer",
+  "Corsair",
+  "Dark Knight",
+  "Dawn Warrior",
+  "Demon Avenger",
+  "Demon Slayer",
+  "Dual Blade",
+  "Evan",
+  "Fire Poison",
+  "Hayato",
+  "Hero",
+  "Hoyoung",
+  "Ice Lightning",
+  "Illium",
+  "Jett",
+  "Kain",
+  "Kaiser",
+  "Kanna",
+  "Kinesis",
+  "Lara",
+  "Luminous",
+  "Marksmen",
+  "Mechanic",
+  "Mercedes",
+  "Mihile",
+  "Night Lord",
+  "Night Walker",
+  "Paladin",
+  "Pathfinder",
+  "Phantom",
+  "Shade",
+  "Shadower",
+  "Thunder Breaker",
+  "Wild Hunter",
+  "Wind Archer",
+  "Xenon",
+  "Zero",
+];
+
+const MAIN_WEAPONS = [
+  "Ancient Bow",
+  "Arm Cannon",
+  "Bladecaster",
+  "Bow",
+  "Cane",
+  "Cannon",
+  "Chain",
+  "Claw",
+  "Crossbow",
+  "Dagger",
+  "Desperado",
+  "Dual Bowgun",
+  "Fan",
+  "Gun",
+  "Heavy Sword",
+  "Katana",
+  "Knuckle",
+  "Lucent Guantlet",
+  "One-handed Axe",
+  "One-handed Mace",
+  "One-handed Sword",
+  "Polearm",
+  "Psy-limiter",
+  "Ritual Fan",
+  "Scepter",
+  "Shining Rod",
+  "Soul Shooter",
+  "Spear",
+  "Staff",
+  "Two-handed Axe",
+  "Two-handed Mace",
+  "Two-handed Sword",
+  "Wand",
+  "Whip Blade",
+  "Whispershot",
+];
+
 const localStorageKey = "characterStats";
+
+const REQUEST_STATUSES = {
+  IDLE: "IDLE",
+  LOADING: "LOADING",
+  SUCCESS: "SUCCESS",
+  ERROR: "ERROR",
+} as const;
+
+type RequestStatus = keyof typeof REQUEST_STATUSES;
 
 export default function Home() {
   const { register, handleSubmit, watch, setValue, formState } = useForm({
     defaultValues,
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const [requestStatus, setRequestStatus] = useState<RequestStatus>(
+    REQUEST_STATUSES.IDLE
+  );
   const [aiResponse, setAiResponse] = useState("");
 
   const onSubmit = async (data: typeof defaultValues) => {
-    setIsLoading(true);
+    setRequestStatus(REQUEST_STATUSES.LOADING);
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/advice`,
         data
       );
       setAiResponse(response.data.message.content);
+      setRequestStatus(REQUEST_STATUSES.SUCCESS);
     } catch (error) {
+      setRequestStatus(REQUEST_STATUSES.ERROR);
       console.error("Error:", error);
     }
-    setIsLoading(false);
+  };
+
+  const getButtonContent = () => {
+    switch (requestStatus) {
+      case REQUEST_STATUSES.IDLE:
+        return "Get advice";
+      case REQUEST_STATUSES.LOADING:
+        return (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Generating advice...
+          </>
+        );
+      case REQUEST_STATUSES.ERROR:
+        return "Error generating advice";
+      case REQUEST_STATUSES.SUCCESS:
+        return "Generate new advice";
+    }
   };
 
   useEffect(() => {
@@ -63,10 +193,8 @@ export default function Home() {
   }, [setValue]);
 
   useEffect(() => {
-    if (formState.isDirty) {
-      const values = watch();
-      localStorage.setItem(localStorageKey, JSON.stringify(values));
-    }
+    const values = watch();
+    localStorage.setItem(localStorageKey, JSON.stringify(values));
   }, [watch, formState]);
 
   return (
@@ -75,15 +203,15 @@ export default function Home() {
         <ModeToggle />
       </nav>
       <main className="flex flex-col items-center p-4 max-w-5xl">
-        <h1 className="text-4xl font-bold text-center mb-8">
+        <h1 className="text-5xl font-bold text-center mb-8">
           MapleStory Reboot AI Assistant
         </h1>
+        <h2 className="text-xl text-center mb-10">
+          Enter your Reboot character&apos;s stats. Get progression advice.
+        </h2>
+
         <form>
-          <h2 className="text-xl text-center mb-12">
-            Provide your Reboot character&apos;s stats. Get AI progression
-            advice.
-          </h2>
-          <div className="flex flex-wrap gap-4 mb-12">
+          <div className="flex flex-wrap gap-4 mb-10 justify-center [&>*]:w-44">
             <div>
               <Label htmlFor="level">Level</Label>
               <Input
@@ -96,22 +224,50 @@ export default function Home() {
 
             <div>
               <Label htmlFor="class">Class</Label>
-              <Input
-                id="class"
-                {...register("class")}
-                placeholder="Class"
-                type="text"
-              />
+              <Select
+                onValueChange={(value) => {
+                  setValue("class", value);
+                }}
+                value={watch("class")}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a class" />
+                </SelectTrigger>
+                <SelectContent className="max-h-96">
+                  <SelectGroup>
+                    <SelectLabel>Classes</SelectLabel>
+                    {MAPLESTORY_CLASSES.map((fruit) => (
+                      <SelectItem key={fruit} value={fruit}>
+                        {fruit}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
               <Label htmlFor="mainWeapon">Main Weapon</Label>
-              <Input
-                id="mainWeapon"
-                {...register("mainWeapon")}
-                placeholder="Main Weapon"
-                type="text"
-              />
+              <Select
+                onValueChange={(value) => {
+                  setValue("mainWeapon", value);
+                }}
+                value={watch("mainWeapon")}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a main weapon" />
+                </SelectTrigger>
+                <SelectContent className="max-h-96">
+                  <SelectGroup>
+                    <SelectLabel>Main Weapons</SelectLabel>
+                    {MAIN_WEAPONS.map((weapon) => (
+                      <SelectItem key={weapon} value={weapon}>
+                        {weapon}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
@@ -185,6 +341,16 @@ export default function Home() {
             </div>
 
             <div>
+              <Label htmlFor="str">Attack Power</Label>
+              <Input
+                id="attackPower"
+                {...register("attackPower")}
+                placeholder="Attack Power"
+                type="number"
+              />
+            </div>
+
+            <div>
               <Label htmlFor="str">STR</Label>
               <Input
                 id="str"
@@ -224,20 +390,23 @@ export default function Home() {
               />
             </div>
           </div>
-          <div className="flex gap-4 items-center justify-center mb-8">
-            <Button onClick={handleSubmit(onSubmit)} disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Generating advice...
-                </>
-              ) : (
-                <>Get advice</>
-              )}
+          <div className="flex gap-4 items-center justify-center mb-14">
+            <Button
+              onClick={handleSubmit(onSubmit)}
+              disabled={requestStatus === REQUEST_STATUSES.LOADING}
+            >
+              {getButtonContent()}
             </Button>
           </div>
         </form>
-        <p className="whitespace-pre-line mb-10 leading-loose">{aiResponse}</p>
+        {aiResponse && (
+          <div className="mx-10">
+            <h2 className="mb-8 font-bold text-4xl">Stats to Work On</h2>
+            <p className="whitespace-pre-line text-lg mb-10 leading-loose">
+              {aiResponse}
+            </p>
+          </div>
+        )}
       </main>
     </div>
   );
