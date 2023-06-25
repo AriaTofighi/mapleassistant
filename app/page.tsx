@@ -206,10 +206,19 @@ export default function Home() {
         <h1 className="text-5xl font-bold text-center mb-8">
           MapleStory Progression Assistant
         </h1>
-        <h2 className="text-xl text-center mb-10">
+        <h2 className="text-xl text-center mb-5">
           Enter your Reboot character&apos;s stats. Get AI generated progression
           advice.
         </h2>
+        <i className="text-sm text-center mb-10">
+          Made by{" "}
+          <a
+            href="https://github.com/AriaTofighi"
+            className="text-blue-300 hover:underline"
+          >
+            Aria Tofighi
+          </a>
+        </i>
 
         <form>
           <div className="flex flex-wrap gap-4 mb-10 justify-center [&>*]:w-44">
