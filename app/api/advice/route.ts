@@ -6,14 +6,8 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-export const config = {
-  api: { bodyParser: false },
-};
-
 export async function POST(req: NextRequest, res: NextResponse) {
-  const body = await req.json();
-
-  const bodyString = JSON.stringify(body);
+  const bodyString = await req.text();
 
   const chatCompletion = await openai.createChatCompletion({
     model: "gpt-4",
