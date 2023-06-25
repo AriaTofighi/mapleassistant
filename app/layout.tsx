@@ -3,7 +3,7 @@ import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 export const metadata = {
-  title: "MapleStory Reboot AI Assistant",
+  title: "MapleStory Progression Assistant",
   description: "Get AI recommendations for your MapleStory Reboot character.",
   icons: {
     icon: "/icon.ico",

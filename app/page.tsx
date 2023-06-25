@@ -173,9 +173,9 @@ export default function Home() {
           </>
         );
       case REQUEST_STATUSES.ERROR:
-        return "Error generating advice";
+        return "Error generating advice. Try again?";
       case REQUEST_STATUSES.SUCCESS:
-        return "Generate new advice";
+        return "Try for more advice";
     }
   };
 
@@ -203,8 +203,8 @@ export default function Home() {
         <ModeToggle />
       </nav>
       <main className="flex flex-col items-center p-4 max-w-5xl">
-        <h1 className="text-4xl font-bold text-center mb-8">
-          MapleStory Reboot AI Assistant
+        <h1 className="text-5xl font-bold text-center mb-8">
+          MapleStory Progression Assistant
         </h1>
         <h2 className="text-xl text-center mb-10">
           Enter your Reboot character&apos;s stats. Get AI generated progression
@@ -282,61 +282,61 @@ export default function Home() {
             </div>
 
             <div>
-              <Label htmlFor="bossDamage">Boss Damage</Label>
+              <Label htmlFor="bossDamage">Boss Damage %</Label>
               <Input
                 id="bossDamage"
                 {...register("bossDamage")}
-                placeholder="Boss Damage"
+                placeholder="Boss Damage %"
                 type="number"
               />
             </div>
 
             <div>
-              <Label htmlFor="ied">IED</Label>
+              <Label htmlFor="ied">IED %</Label>
               <Input
                 id="ied"
                 {...register("ied")}
-                placeholder="IED"
+                placeholder="IED %"
                 type="number"
               />
             </div>
 
             <div>
-              <Label htmlFor="damageBonus">Damage Bonus</Label>
+              <Label htmlFor="damageBonus">Damage Bonus %</Label>
               <Input
                 id="damageBonus"
                 {...register("damageBonus")}
-                placeholder="Damage Bonus"
+                placeholder="Damage Bonus %"
                 type="number"
               />
             </div>
 
             <div>
-              <Label htmlFor="finalDamage">Final Damage</Label>
+              <Label htmlFor="finalDamage">Final Damage %</Label>
               <Input
                 id="finalDamage"
                 {...register("finalDamage")}
-                placeholder="Final Damage"
+                placeholder="Final Damage %"
                 type="number"
               />
             </div>
 
             <div>
-              <Label htmlFor="criticalRate">Critical Rate</Label>
+              <Label htmlFor="criticalRate">Critical Rate %</Label>
               <Input
                 id="criticalRate"
                 {...register("criticalRate")}
-                placeholder="Critical Rate"
+                placeholder="Critical Rate %"
                 type="number"
               />
             </div>
 
             <div>
-              <Label htmlFor="criticalDamage">Critical Damage</Label>
+              <Label htmlFor="criticalDamage">Critical Damage %</Label>
               <Input
                 id="criticalDamage"
                 {...register("criticalDamage")}
-                placeholder="Critical Damage"
+                placeholder="Critical Damage %"
                 type="number"
               />
             </div>
@@ -407,7 +407,7 @@ export default function Home() {
         </form>
         {aiResponse && (
           <div className="mx-10">
-            <h2 className="mb-8 font-bold text-4xl">Stats to Work On</h2>
+            <h2 className="mb-8 font-bold text-4xl">Progression Advice</h2>
             <p className="whitespace-pre-line text-lg mb-10 leading-loose">
               {aiResponse}
             </p>
