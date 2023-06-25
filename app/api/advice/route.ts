@@ -10,7 +10,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const bodyString = await req.text();
 
   const chatCompletion = await openai.createChatCompletion({
-    model: "gpt-4",
+    model: "gpt-3.5-turbo",
     messages: [
       {
         role: "system",
