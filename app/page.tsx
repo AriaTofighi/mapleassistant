@@ -221,7 +221,7 @@ export default function Home() {
         </i>
 
         <form>
-          <div className="flex flex-wrap gap-4 mb-10 justify-center [&>*]:w-44">
+          <div className="flex flex-wrap gap-4 mx-2 mb-10 justify-center [&>*]:basis-full min-[450px]:[&>*]:basis-44">
             <div>
               <Label htmlFor="level">Level</Label>
               <Input
